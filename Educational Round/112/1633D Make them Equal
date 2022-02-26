@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define lli long long int
+#define f first
+#define s second
+#define pb push_back
+#define MAXN 1006
+#define INF 2000000005
+#define mod 1000000007
+#define loop(i,a,b) for  (lli i=(a); i<= (signed)(b); i++)
+#define lp(i,a) for(lli i = 0;i<(signed)(a); i++)
+#define rep(n) for(lli i = 0; i< n; i++)
+#define debug cout<<"I am here"<<endl;
+typedef vector<lli> vi;
+typedef vector<vector<lli>> vvi;
+/*
+    1. Can find the minimum number of moves to get that vaue by looping through all values, and looping through all x
+,    make sure next value is within range
+    2. 1/0 knapsack.
+    Make note that K does not have to be that big
+    Largest number of moves is 12, and so largest k necessary is 12n. So,
+    K is min(12n, k) .That way it shortens the code
+*/
+int w[MAXN];
+int v[MAXN];
+int moves[MAXN];
+int main() {
+  lli t;
+  cin>>t;
+  lp(_, t){
+    int n, k;
+    cin>>n>>k;
+    memset(moves,0x3f, sizeof(moves));
+    memset(w, 0, sizeof(w));
+    memset(v, 0, sizeof(v));
+    moves[1] = 0;
+    for(int i = 1 ; i< 1001; i++){
+        for(int j = 1; j  <= i;j++){
+            int append = i /j;
+            //cout<<i<< " "<<j<<endl;
+            if(i + append <=1001) moves[i + append] = min(moves[i + append], moves[i] + 1);
+        }
+    }
+    int maxmoves = 1000 ;
+    loop(i,1,n){
+       int x;
+       cin>>x;
+       w[i] = moves[x];
+    }
+    loop(i,1,n){
+        int x;
+        cin>>x;
+        v[i] = x;
+    }
+    ///buffer
+    ///note that k is actually not that big. Limited by 12&k
+    k = min(12*n, k);
+    vvi dp(n+1, vi (k+3, 0));
+    loop(i,1,n){
+       loop(j, 0, k){
+          dp[i][j] = dp[i-1][j];
+          lli left = j - w[i];
+          if(left >=0){
+              dp[i][j] = max(dp[i][j], dp[i-1][left] + v[i]);
+          }
+       }
+    }
+    cout<<dp[n][k]<<endl;
+  }
+
+}
