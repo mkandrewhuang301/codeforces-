@@ -1,0 +1,103 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define lli long long int
+#define f first
+#define s second
+#define pb push_back
+#define MAXN 1000005
+#define INF 1000000000000000009
+#define mod 1000000007
+#define loop(i,a,b) for  (lli i=(a); i<= (signed)(b); i++)
+#define lp(i,a) for(lli i = 0;i<(signed)(a); i++)
+#define debug cout<<"i am here"<<endl;
+typedef vector<lli> vi;
+/*
+    1. Set all players to 1. This is the bottommost row and there are 2^n players
+    2. convert all game numbers to segment tree counterpart. Store which one on the row and which row
+    3. Get all points and set the state of each game in a seg_operation tree
+    4. based on the operation, find how many players could win in each game
+    5. get all updates. Change all games and propagate downard until get to final game. Recount number of players
+    6. Print answer every time for final game after update
+    note:
+    I have 3 update functions
+    first is just to udpate the value of each initial player
+    second is to add the value onto the segment tree (this is for the initial states ) .cant propagate downard because bottom not made yert
+    third is actually gettinge each query. Each query (may) change the state of the game, so need to propagate downward to account for change in all future games
+    
+*/
+lli seg_tree[(1<<19)];
+char seg_operation[(1<<19)];
+void construct(lli k, lli offset, lli val )
+{
+    k+= (1<<(18 - offset));
+    seg_tree[k] = val;
+}
+void change(lli loc, char res)
+{
+    if(res == '1'){
+        seg_tree[loc] = seg_tree[2*loc+1];
+    }
+    else if( res == '0'){
+        seg_tree[loc] = seg_tree[2*loc];
+    }
+    else{
+        seg_tree[loc] = seg_tree[2*loc] + seg_tree[2*loc+1];
+    }
+}
+void game(lli k, lli offset, char res)
+{
+    k+= (1<<(18 - offset));
+    seg_operation[k] = res;
+    change(k ,res);
+}
+void upd(lli k, lli offset, char res)
+{
+    k+= (1<<18 - offset);
+    seg_operation[k] = res;
+    change(k, seg_operation[k]);
+    while(k>1){
+        k/=2;
+        change(k, seg_operation[k]);
+    }
+}
+int main() {
+   lli n;
+   cin>>n;
+   string s;
+   cin>>s;
+   lli base = n-1; /// since if you have size
+   ///initially lets map all values to base;
+   for(lli i = 0 ;i  < pow(2, n); i++){
+      construct(i, 0, 1);
+   }
+   map<lli,lli> mp; /// convert each value to its respective height;
+   lli layer = pow(2, n-1);
+   map<lli, pair<lli,lli>> convert; // gives value, <which k, offset>
+   lli currow = -1;
+   lli offset = 1;
+
+   for(lli i = 1; i <= s.length(); i++){
+       currow++;
+       convert[i] = {currow, offset};
+       if(currow == layer-1){
+        layer/=2;
+        offset++;
+        currow = -1;
+       }
+   }
+   for(lli i = 0; i<s.length(); i++)
+   {
+       game(convert[i+1].f, convert[i+1].s, s[i]);
+   }
+   lli maxoffset = offset -1;
+   lli q;
+   cin>>q;
+   lp(i,q)
+   {
+       lli k;
+       char c;
+       cin>>k>>c;
+       upd(convert[k].f, convert[k].s, c );
+       cout<<seg_tree[(1<<18 - maxoffset)]<<endl;;
+   }
+}
