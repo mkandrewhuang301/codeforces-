@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define lli long long int
+#define f first
+#define s second
+#define pb push_back
+#define MAXN 2000005
+#define INF 10000000000000005
+#define mod 1000000007
+#define loop(i,a,b) for  (lli i=(a); i<= (signed)(b); i++)
+#define lp(i,a) for(lli i = 0;i<(signed)(a); i++)
+#define rev(a) reverse(a.begin(), a.end())
+#define prlli(a) cout<<a<<" "
+#define prllil(a) cout<<a<<endl;
+#define debug cout<<"I am here"<<endl;
+typedef vector<lli> vi;
+/*
+   go from left to right. If using that potion is >= 0, use the potion. 
+   However, if less than zero, see if there was a potion that you used that was more negative than this potion. This doesnt change the potion number but changes health.
+       Basically what you are doing is that instead of using the most negative potion, you are using this potion in place of it, causing a larger overall health
+
+
+*/
+lli a[MAXN];
+lli pref[MAXN];
+#define health first
+#define number second
+int main()
+{
+  lli n;
+  cin>>n;
+  loop(i,1,n)cin>>a[i];
+  lli health  = 0 ;
+  lli ans = 0 ;
+  multiset<lli> s ;
+  loop(i, 1,n){
+     if(health + a[i] >=0){
+        health+=a[i];
+        ans++;
+        s.insert(a[i]);
+     }
+     else {
+        if(*s.begin() < a[i]){
+            health += a[i] - *s.begin();
+            s.erase(s.begin());
+            s.insert(a[i]);
+        }
+     }
+  }
+  cout<<ans<<endl;
+}
