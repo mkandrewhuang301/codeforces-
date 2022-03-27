@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define lli long long int
+#define f first
+#define s second
+#define pb push_back
+#define MAXN 2000005
+#define INF 10000000000000005
+#define mod 1000000007
+#define loop(i,a,b) for  (lli i=(a); i<= (signed)(b); i++)
+#define lp(i,a) for(lli i = 0;i<(signed)(a); i++)
+#define rev(a) reverse(a.begin(), a.end())
+#define prlli(a) cout<<a<<" "
+#define prllil(a) cout<<a<<endl;
+#define debug cout<<"I am here"<<endl;
+typedef vector<lli> vi;
+/*
+   observation: the sum of all the pieces is the same as the final cake.
+   so find the size of the full cake and cut it. have each multiset. 
+   If the if it is possible, cutting the original cake will result in the pieces. 
+   so cut, get last value, if it is good, the cut and remove.
+   Otherwise, add the two bits into the multiset of the "workig backwards" original cake. 
+   When size of both is zero ,then you know that it worked
+*/
+int main()
+{
+   lli t;
+   cin>>t;
+   lp(_,t){
+      lli n;
+      cin>>n;
+      multiset<lli>s;
+      lli tot = 0;
+      lp(i,n){
+         lli x;
+         cin>>x;
+         s.insert(x);
+         tot +=x;
+      }
+      multiset<lli>o;
+      o.insert(tot);
+      while(!o.empty()){
+        lli piece = *o.rbegin();
+        if(piece < *s.rbegin())break;
+         o.erase(--o.end());
+         if(s.count(piece)){
+            s.erase(s.find(piece));
+         }
+         else{
+            o.insert(piece/2);
+            o.insert((piece+1)/2);
+         }
+      }
+      cout<<(s.empty()? "YES":"NO")<<endl;
+   }
+}
