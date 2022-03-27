@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define lli long long int
+#define f first
+#define s second
+#define pb push_back
+#define MAXN 2000005
+#define INF 10000000000000005
+#define mod 1000000007
+#define loop(i,a,b) for  (lli i=(a); i<= (signed)(b); i++)
+#define lp(i,a) for(lli i = 0;i<(signed)(a); i++)
+#define rev(a) reverse(a.begin(), a.end())
+#define prlli(a) cout<<a<<" "
+#define prllil(a) cout<<a<<endl;
+#define debug cout<<"I am here"<<endl;
+typedef vector<lli> vi;
+/*
+   observation: suppose you have a break on the second leftmost node on the first row. then the leftmost node must be connected to a row.
+   This holds true for the 4 corners
+   Now lets say that you broke the 3rd computer from the left. Since we need to connect the edges, both sides left and right will guarentee a onnected component.
+   So now we just need to optimally find a way to connect the edges
+   there are 3 cases to connect. options are for a1, b[1] ,b[n], and b[j] where j makes the smallest connection.
+   How to find the best connection path?
+   we can test all paths
+   first get the minimum connection needed for each of the 4 edges. 
+   So there are two cases : 
+        top left and bottom left either both get their respective minimum or connect to each other. Similarly, top right and bottom right either get both their own or connected together
+        top left and bottom right either both get respective minimum or connect to each other .Similarly, top right and bottom left either get both their own or connected together
+    Get the minimum of all these cases and this is answer
+
+*/
+int main()
+{
+   lli t;
+   cin>>t;
+   lp(_,t){
+      lli n;
+      cin>>n;
+      vector<lli> a(n), b(n);
+      lp(i,n) cin>>a[i];
+      lp(i,n)cin>>b[i];
+      lli la, lb, ra, rb;
+       la = lb = ra = rb = 1000000000000;
+      lp(i,n){
+       la = min(la, abs(b[i] - a[0]));
+       ra = min(ra, abs(b[i] - a[n-1]));
+       lb = min(lb, abs(a[i] - b[0]));
+       rb = min(rb, abs(a[i] - b[n-1]));
+      }
+      cout<<min(   min(lb  + la, abs(a[0] - b[0])) + min(rb + ra , abs(a[n-1]  - b[n-1])), min(lb + ra, abs(a[n-1] - b[0]))  +min (la + rb, abs(a[0] - b[n-1])) )<<endl;;
+
+
+   }
+}
+
