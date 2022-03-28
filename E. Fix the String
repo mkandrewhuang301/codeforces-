@@ -1,0 +1,110 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define lli long long int
+#define f first
+#define s second
+#define pb push_back
+#define MAXN 2000005
+#define INF 10000000000000005
+#define mod 1000000007
+#define loop(i,a,b) for  (lli i=(a); i<= (signed)(b); i++)
+#define lp(i,a) for(lli i = 0;i<(signed)(a); i++)
+#define rev(a) reverse(a.begin(), a.end())
+#define prlli(a) cout<<a<<" "
+#define prllil(a) cout<<a<<endl;
+#define debug cout<<"I am here"<<endl;
+typedef vector<lli> vi;
+/*
+   observation: if 11, then it is impossible
+   cases that work are
+   a. (())
+   b. ()()
+   task is to choose which one we get
+   101
+   one that works is ()()
+   1001 -> impossible
+   10001 -> it is just either  a or b and 1
+   100001 -> 1000, the extra 0 doesnt cost anything
+   solution:
+   input string and orignial sequence
+   for first 1, get the number of 0 between the 1 and the next 1. if # == 0 or 2, then impossible
+     if # == 1, then it must be ()()
+     if # >=3 it is the best of a,b and the rest doesnt matter
+     solve for the answer
+
+
+*/
+int main()
+{
+   lli t;
+   cin>>t;
+   lp(_,t){
+      int n;
+      cin>>n;
+      string s;
+      cin>>s;
+      string a;
+      cin>>a;
+      bool flag = false;
+      string fir = "()()";
+      string sec = "(())";
+      int ans = 0 ;
+      lp(i,n-3){
+          if(a[i] == '1'){
+            ///find number of spaces until next 1;
+            int numzero  = 0;
+            bool hasone = false;
+            for(int j   = i+1; j<a.length();j++){
+                if(a[j] != '1') numzero++;
+                else if(a[j] == '1'){
+                    hasone = true;
+                    break;
+                }
+            }
+            //cout<<"HASONE"<<hasone<<endl;
+            if(!hasone){
+                int add = 10000000;
+                int temp = 0;
+                int temp2 = 0;
+                for(int j = 0;  j <4; j++){
+                    if(s[i + j] != fir[j]) temp++;
+                    if(s[i+j]!= sec[j]) temp2++;
+                }
+                add = min(add, temp);
+                add = min(add, temp2);
+                ans+= add;
+            }
+            else{
+                if(numzero == 0 || numzero == 2 ){
+                    cout<<-1<<endl;
+                    flag = true;
+                    break;
+                }
+                int add = 10000000;
+                int temp = 0;
+                int temp2 = 0;
+                for(int j = 0;  j <4; j++){
+                    if(s[i + j] != fir[j]) temp++;
+                    if(s[i+j]!= sec[j]) temp2++;
+                }
+                ///just have to change
+                add = min(add, temp);
+                    lp(j, 4){
+                     s[i+j] = fir[j];
+                }
+                if(numzero >=3) {
+                    if(temp2 < temp){
+                       lp(j, 4){
+                       s[i+j] = sec[j];
+                       }
+                    }
+                    add = min(add, temp2);
+                }
+                ans+= add;
+            }
+          }
+      }
+      if(!flag)cout<<ans<<endl;
+   }
+}
+
